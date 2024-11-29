@@ -2,7 +2,7 @@ trigger:
 - master
 
 pool:
-  name: 'Default' # Ensure this uses your self-hosted agent pool
+  name: 'default' # Ensure this uses your self-hosted agent pool
 
 steps:
 - task: UseDotNet@2
