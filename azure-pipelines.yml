@@ -1,0 +1,27 @@
+trigger:
+  - master
+
+pool:
+  name: MySelfHostedPool  # Ensure you've set up your self-hosted agent
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    version: '8.x'
+    includePreviewVersions: false
+
+- script: dotnet build --configuration Release
+  displayName: 'Build project'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '*/.csproj'
+    configurationToPack: 'Release'
+    outputDir: '$(Build.ArtifactStagingDirectory)'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    publishVstsFeed: 'mylatestfeed'
