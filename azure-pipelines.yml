@@ -15,9 +15,9 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
-    command: 'pack'
-    packagesToPack: 'ShowCase/ShowCase.csproj'  # Specify your project path explicitly
-    outputDir: '$(Build.ArtifactStagingDirectory)'
+        command: 'pack'
+        packagesToPack: '**/*.csproj'
+        versioningScheme: 'off'
 
 - task: NuGetCommand@2
   inputs:
