@@ -1,28 +1,24 @@
 trigger:
-  - master
+- master
 
 pool:
-  name: Default  # Ensure your self-hosted agent is registered in this pool
+  name: 'Default' # Ensure this uses your self-hosted agent pool
 
 steps:
 - task: UseDotNet@2
   inputs:
     version: '8.x'
-    includePreviewVersions: false
+    includePreviewVersions: true
 
-- script: dotnet build --configuration Release --output $(Build.SourcesDirectory)/output
-  displayName: 'Build Project'
+- task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-        command: 'pack'
-        packagesToPack: '**/*.csproj'
-        versioningScheme: 'off'
+- script: |
+    dotnet build --configuration Release
+    dotnet pack --configuration Release -o $(Build.ArtifactStagingDirectory)
+  displayName: 'Build and Package'
 
 - task: NuGetCommand@2
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: 'ac8d670a-28e4-4b99-bfe7-f68a9a28381a/c954abfb-d093-4589-9507-9d35e310c053'
-    allowPackageConflicts: true
+    publishVstsFeed: 'mylatestfeed' # Update accordingly
