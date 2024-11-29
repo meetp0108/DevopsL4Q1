@@ -2,7 +2,7 @@ trigger:
   - master
 
 pool:
-  name: Default  # Ensure you've set up your self-hosted agent
+  name: Default  # Ensure your self-hosted agent is registered in this pool
 
 steps:
 - task: UseDotNet@2
@@ -11,19 +11,19 @@ steps:
     includePreviewVersions: false
 
 - script: dotnet build --configuration Release
-  displayName: 'Build project'
+  displayName: 'Build Project'
 
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '*/.csproj'
+    packagesToPack: '*/.csproj'  # Updated pattern to search recursively
     configurationToPack: 'Release'
     outputDir: '$(Build.ArtifactStagingDirectory)'
 
 - task: NuGetCommand@2
   inputs:
-        command: 'push'
-        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-        nuGetFeedType: 'internal'
-        publishVstsFeed: 'ac8d670a-28e4-4b99-bfe7-f68a9a28381a/c954abfb-d093-4589-9507-9d35e310c053'
-        allowPackageConflicts: true
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'  # Corrected pattern
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'ac8d670a-28e4-4b99-bfe7-f68a9a28381a/c954abfb-d093-4589-9507-9d35e310c053'  # Ensure this is correct
+    allowPackageConflicts: true
