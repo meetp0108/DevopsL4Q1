@@ -16,9 +16,8 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '*/.csproj'  # Updated pattern to search recursively
-    configurationToPack: 'Release'
-    outputDir: '$(Build.ArtifactStagingDirectory)'
+    packagesToPack: '**/*.csproj'
+    versioningScheme: 'off'
 
 - task: NuGetCommand@2
   inputs:
