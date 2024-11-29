@@ -21,5 +21,5 @@ steps:
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    publishVstsFeed: 'mpate959/mpate959' # Update accordingly
+    publishVstsFeed: 'mpate959/mylatestfeed' # Update accordingly
     allowPackageConflicts: true
