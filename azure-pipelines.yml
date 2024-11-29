@@ -10,19 +10,19 @@ steps:
     version: '8.x'
     includePreviewVersions: false
 
-- script: dotnet build --configuration Release
+- script: dotnet build --configuration Release --output $(Build.SourcesDirectory)/output
   displayName: 'Build Project'
 
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '**/*.csproj'
-    versioningScheme: 'off'
+    packagesToPack: 'ShowCase/ShowCase.csproj'  # Specify your project path explicitly
+    outputDir: '$(Build.ArtifactStagingDirectory)'
 
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'  # Corrected pattern
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'ac8d670a-28e4-4b99-bfe7-f68a9a28381a/c954abfb-d093-4589-9507-9d35e310c053'  # Ensure this is correct
+    publishVstsFeed: 'ac8d670a-28e4-4b99-bfe7-f68a9a28381a/c954abfb-d093-4589-9507-9d35e310c053'
     allowPackageConflicts: true
