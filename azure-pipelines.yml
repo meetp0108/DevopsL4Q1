@@ -2,24 +2,27 @@ trigger:
 - master
 
 pool:
-  name: 'default' # Ensure this uses your self-hosted agent pool
+  name: 'default'  # Self-hosted agent pool
 
 steps:
-- task: UseDotNet@2
-  inputs:
-    version: '8.x'
-    includePreviewVersions: true
-
 - task: NuGetToolInstaller@1
 
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '*/.sln'
+
+- task: VSBuild@1
+  inputs:
+    solution: '*/.sln'
+    configuration: 'Release'
+
 - script: |
-    dotnet build --configuration Release
     dotnet pack --configuration Release -o $(Build.ArtifactStagingDirectory)
-  displayName: 'Build and Package'
+  displayName: 'Create NuGet Package'
 
 - task: NuGetCommand@2
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    publishVstsFeed: 'MeetDevopsL4Q1/mylatestfeed' # Update accordingly
+    publishVstsFeed: 'MeetDevopsL4Q1/mylatestfeed'
     allowPackageConflicts: true
