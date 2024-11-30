@@ -8,7 +8,7 @@ steps:
 - task: UseDotNet@2
   inputs:
     version: '4.8'
-    includePreviewVersions: true
+    
 
 - task: NuGetToolInstaller@1
 - script: |
