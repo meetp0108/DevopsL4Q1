@@ -2,31 +2,24 @@ trigger:
 - master
 
 pool:
-  name: 'default'  # Self-hosted agent pool
+  name: 'default' # Ensure this uses your self-hosted agent pool
 
 steps:
-- task: NuGetToolInstaller@1  # Install NuGet tool
-
-# Restore dependencies for .NET Framework project
-- task: NuGetCommand@2
+- task: UseDotNet@2
   inputs:
-    restoreSolution: '*/.sln'  # Replace with your actual solution file path if needed
+    version: '8.x'
+    includePreviewVersions: true
 
-# Build using Visual Studio build task for .NET Framework projects
-- task: VSBuild@1
-  inputs:
-    solution: '*/.sln'  # Replace with your solution file path
-    configuration: 'Release'
+- task: NuGetToolInstaller@1
 
-# Create the NuGet package using the .NET CLI (optional, VSBuild can also create packages)
 - script: |
+    dotnet build --configuration Release
     dotnet pack --configuration Release -o $(Build.ArtifactStagingDirectory)
-  displayName: 'Create NuGet Package'
+  displayName: 'Build and Package'
 
-# Push the NuGet package to your Azure Artifacts feed
 - task: NuGetCommand@2
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    publishVstsFeed: 'MeetDevopsL4Q1/mylatestfeed'  # Update with your actual feed name
+    publishVstsFeed: 'MeetDevopsL4Q1/mylatestfeed' # Update accordingly
     allowPackageConflicts: true
